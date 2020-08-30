@@ -43,16 +43,8 @@ isPalindrome xs
 -- Transform a list, possibly holding lists as elements into
 -- a `flat' list by replacing each list with its elements (recursively).
 
--- Example:
--- λ> flatten (Elem 5)
--- [5]
--- λ> flatten (List [Elem 1, List [Elem 2, List [Elem 3, Elem 4], Elem 5]])
--- [1,2,3,4,5]
--- λ> flatten (List [])
--- []
-
--- Originally stolen from wiki because I don't understand this data type
--- Figured it out an re-implemented independently
+-- Originally stolen from wiki because I don't understand this data type.
+-- Figured it out and re-implemented independently.
 data NestedList a = Elem a | List [NestedList a]
 
 flatten :: NestedList a -> [a]
@@ -63,7 +55,6 @@ flatten (List (x:xs)) = flatten x ++ flatten (List xs)
 -- 8. (**) Eliminate consecutive duplicates of list elements.
 -- If a list contains repeated elements they should be replaced with a single
 -- copy of the element. The order of the elements should not be changed.
-
 compress :: (Eq a) => [a] -> [a]
 compress []     = []
 compress [x]    = [x]
@@ -74,9 +65,22 @@ compress (x:xs) = if x == head xs
 -- 9. (**) Pack consecutive duplicates of list elements into sublists.
 -- If a list contains repeated elements
 -- they should be placed in separate sublists.
-
--- TODO
 pack :: (Eq a) => [a] -> [[a]]
 pack []     = []
 pack [x]    = [[x]]
-pack (x:xs) = undefined
+pack xs = packHelp $ map (\i -> [i]) xs
+
+packHelp :: (Eq a) => [[a]] -> [[a]]
+packHelp [x]      = [x] 
+packHelp (x:y:xs) = if head x == head y
+                    then packHelp ((head y : x) : xs)
+                    else x:(packHelp $ y:xs)
+
+-- 10. (*) Run-length encoding of a list.
+-- Use the result of problem P09 to implement the so-called
+-- run-length encoding data compression method.
+-- Consecutive duplicates of elements are encoded as lists/tuples (N E)
+-- where N is the number of duplicates of the element E.
+encode :: (Eq a) => [a] -> [(Int, a)]
+encode xs = map (\t -> (length t, head t)) (pack xs)
+
