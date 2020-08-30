@@ -40,7 +40,8 @@ isPalindrome xs
     | otherwise          = isPalindrome $ init $ tail xs
 
 -- 7.(**) Flatten a nested list structure.
--- Transform a list, possibly holding lists as elements into a `flat' list by replacing each list with its elements (recursively).
+-- Transform a list, possibly holding lists as elements into
+-- a `flat' list by replacing each list with its elements (recursively).
 
 -- Example:
 -- λ> flatten (Elem 5)
@@ -50,12 +51,32 @@ isPalindrome xs
 -- λ> flatten (List [])
 -- []
 
+-- Originally stolen from wiki because I don't understand this data type
+-- Figured it out an re-implemented independently
 data NestedList a = Elem a | List [NestedList a]
 
--- TODO: actually solve this one
--- stolen from wiki because I don't understand this data type
 flatten :: NestedList a -> [a]
 flatten (List [])     = []
 flatten (Elem x)      = [x]
 flatten (List (x:xs)) = flatten x ++ flatten (List xs)
 
+-- 8. (**) Eliminate consecutive duplicates of list elements.
+-- If a list contains repeated elements they should be replaced with a single
+-- copy of the element. The order of the elements should not be changed.
+
+compress :: (Eq a) => [a] -> [a]
+compress []     = []
+compress [x]    = [x]
+compress (x:xs) = if x == head xs
+                    then compress $ x : tail xs
+                    else x : compress xs
+
+-- 9. (**) Pack consecutive duplicates of list elements into sublists.
+-- If a list contains repeated elements
+-- they should be placed in separate sublists.
+
+-- TODO
+pack :: (Eq a) => [a] -> [[a]]
+pack []     = []
+pack [x]    = [[x]]
+pack (x:xs) = undefined
