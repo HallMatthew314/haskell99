@@ -149,3 +149,35 @@ dropEvery :: [a] -> Int -> [a]
 dropEvery xs c = map fst [t | t <- z, snd t `mod` c /= 0]
                 where z = zip xs [1 .. ]
 
+-- 17. (*) Split a list into two parts; the length of the first part is given.
+-- Do not use any predefined predicates. 
+split :: [a] -> Int -> ([a], [a])
+split xs 0     = ([], xs)
+split (x:xs) c = (x:fst t, snd t)
+               where t = split xs (c - 1)
+
+-- 18. (**) Extract a slice from a list.
+-- Given two indices, i and k, the slice is the list containing
+-- the elements between the i'th and k'th element of the original list
+-- (both limits included).
+-- Start counting the elements with 1.
+slice :: [a] -> Int -> Int -> [a]
+slice _ 0 _  = undefined
+slice xs 1 k = take k xs
+slice xs i k = slice (tail xs) (i - 1) (k - 1)
+
+-- 19. (**) Rotate a list N places to the left.
+rotate :: [a] -> Int -> [a]
+rotate [] _     = []
+rotate [x] _    = [x]
+rotate xs i
+    | i > 0     = rotate (tail xs ++ [head xs]) (i - 1)
+    | i < 0     = rotate (last xs:init xs) (i + 1)
+    | otherwise = xs
+
+-- 20. (*) Remove the K'th element from a list. (1-indexed)
+removeAt :: Int -> [a] -> (a, [a])
+removeAt 1 xs     = (head xs, tail xs)
+removeAt c (x:xs) = (fst t, x:snd t)
+                  where t = removeAt (c - 1) xs
+
