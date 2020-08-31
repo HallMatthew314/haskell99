@@ -108,3 +108,29 @@ decodeModified []                  = []
 decodeModified ((Single x):xs)     = x : decodeModified xs
 decodeModified ((Multiple c x):xs) = (take c $ repeat x) ++ decodeModified xs
 
+-- 13. (**) Run-length encoding of a list (direct solution).
+-- Implement the so-called run-length encoding data compression
+-- method directly. i.e. don't explicitly create the sublists
+-- containing the duplicates, as in problem 9, but only count them.
+-- As in problem P11, simplify the result list by replacing
+-- the singleton lists (1 X) by X.
+encodeDirect :: (Eq a) => [a] -> [MultiSingle a]
+encodeDirect [] = []
+encodeDirect xs = edHelp $ map (\x -> Single x) xs
+
+edHelp :: (Eq a) => [MultiSingle a] -> [MultiSingle a]
+edHelp []                         = []
+edHelp [x]                        = [x]
+edHelp [Single x, Single y]       = if x == y
+                                    then [Multiple 2 x]
+                                    else [Single x, Single y]
+edHelp [Multiple c x, Single y]   = if x == y
+                                    then [Multiple (c + 1) x]
+                                    else [Multiple c x, Single y]
+edHelp (Single x:Single y:xs)     = if x == y
+                                    then edHelp (Multiple 2 x:xs)
+                                    else Single x:edHelp (Single y:xs)
+edHelp (Multiple c x:Single y:xs) = if x == y
+                                    then edHelp (Multiple (c + 1) x:xs)
+                                    else Multiple c x:edHelp (Single y:xs)
+
