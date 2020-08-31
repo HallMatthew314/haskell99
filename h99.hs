@@ -134,3 +134,18 @@ edHelp (Multiple c x:Single y:xs) = if x == y
                                     then edHelp (Multiple (c + 1) x:xs)
                                     else Multiple c x:edHelp (Single y:xs)
 
+-- 14. (*) Duplicate the elements of a list.
+dupli :: [a] -> [a]
+dupli []     = []
+dupli (x:xs) = x:x:dupli xs
+
+-- 15. (**) Replicate the elements of a list a given number of times.
+repli :: [a] -> Int -> [a]
+repli [] _     = []
+repli (x:xs) c = (take c $ repeat x) ++ repli xs c
+
+-- 16. (**) Drop every N'th element from a list. (first is 1, not 0)
+dropEvery :: [a] -> Int -> [a]
+dropEvery xs c = map fst [t | t <- z, snd t `mod` c /= 0]
+                where z = zip xs [1 .. ]
+
