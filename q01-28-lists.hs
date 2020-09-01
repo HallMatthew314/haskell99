@@ -1,4 +1,7 @@
 -- https://wiki.haskell.org/H-99:_Ninety-Nine_Haskell_Problems
+-- https://wiki.haskell.org/99_questions/1_to_10
+-- https://wiki.haskell.org/99_questions/11_to_20
+-- https://wiki.haskell.org/99_questions/21_to_28
 
 -- 1. (*) Find the last element of a list.
 myLast :: [a] -> a
@@ -181,3 +184,16 @@ removeAt 1 xs     = (head xs, tail xs)
 removeAt c (x:xs) = (fst t, x:snd t)
                   where t = removeAt (c - 1) xs
 
+-- 21. Insert an element at a given position into a list. (1-indexed)
+insertAt :: a -> [a] -> Int -> [a]
+insertAt _ _ 0  = undefined
+insertAt x [] _ = [x]
+insertAt x xs 1 = x:xs
+insertAt x xs i = head xs:insertAt x (tail xs) (i - 1)
+
+-- 22. Create a list containing all integers within a given range. (inclusive)
+range :: Int -> Int -> [Int]
+range x y
+    | x > y     = []
+    | x == y    = [x]
+    | otherwise = x:range (x + 1) y
