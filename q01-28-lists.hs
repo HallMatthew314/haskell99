@@ -3,6 +3,8 @@
 -- https://wiki.haskell.org/99_questions/11_to_20
 -- https://wiki.haskell.org/99_questions/21_to_28
 
+import System.Random
+
 -- 1. (*) Find the last element of a list.
 myLast :: [a] -> a
 myLast [x]    = x
@@ -154,10 +156,10 @@ dropEvery xs c = map fst [t | t <- z, snd t `mod` c /= 0]
 
 -- 17. (*) Split a list into two parts; the length of the first part is given.
 -- Do not use any predefined predicates. 
-split :: [a] -> Int -> ([a], [a])
-split xs 0     = ([], xs)
-split (x:xs) c = (x:fst t, snd t)
-               where t = split xs (c - 1)
+split' :: [a] -> Int -> ([a], [a])
+split' xs 0     = ([], xs)
+split' (x:xs) c = (x:fst t, snd t)
+                where t = split' xs (c - 1)
 
 -- 18. (**) Extract a slice from a list.
 -- Given two indices, i and k, the slice is the list containing
@@ -197,3 +199,10 @@ range x y
     | x > y     = []
     | x == y    = [x]
     | otherwise = x:range (x + 1) y
+
+-- 23. Extract a given number of randomly selected elements from a list.
+rndSelect :: [a] -> Int -> IO [a]
+rndSelect xs n = do
+    gen <- newStdGen
+    return $ [xs !! (mod i $ length xs) | i <- (take n $ randoms gen)]
+
