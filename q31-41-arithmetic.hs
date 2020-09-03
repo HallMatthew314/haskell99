@@ -54,12 +54,12 @@ primeFactorsMult :: Int -> [(Int, Int)]
 primeFactorsMult = pack . primeFactors
 
 pack :: (Eq a) => [a] -> [(a, Int)]
-pack [] = []
+pack []  = []
 pack [x] = [(x, 1)]
-pack xs = packHelp $ map (\i -> (i, 1)) xs
+pack xs  = packHelp $ map (\i -> (i, 1)) xs
 
 packHelp :: (Eq a) => [(a, Int)] -> [(a, Int)]
-packHelp [x] = [x]
+packHelp [x]      = [x]
 packHelp (x:y:xs) = if fst x == fst y
                     then packHelp ((fst x, snd x + 1):xs)
                     else x:packHelp (y:xs)
