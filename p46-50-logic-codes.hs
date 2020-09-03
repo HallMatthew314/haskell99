@@ -54,3 +54,18 @@ table f =
         d = tableLine (f) (False,False)
     in  printf "%s%s%s%s" a b c d
 
+-- (*) 47. Truth tables for logical expressions (2).
+-- Continue problem P46 by defining and/2, or/2, etc as being operators.
+-- This allows to write the logical expression in the more natural way,
+-- as in the example: A and (A or not B). Define operator precedence
+-- as usual; i.e. as in Java.
+
+-- Precedence: not, eq, and, xor, or, impl
+infixl 4 `equ'`
+infixl 3 `and'`
+infixl 3 `nand'`
+infixl 2 `xor'`
+infixl 1 `or'`
+infixl 1 `nor'`
+infixl 0 `impl'`
+
