@@ -54,7 +54,7 @@ table f =
         d = tableLine (f) (False,False)
     in  printf "%s%s%s%s" a b c d
 
--- (*) 47. Truth tables for logical expressions (2).
+-- 47. (*) Truth tables for logical expressions (2).
 -- Continue problem P46 by defining and/2, or/2, etc as being operators.
 -- This allows to write the logical expression in the more natural way,
 -- as in the example: A and (A or not B). Define operator precedence
@@ -68,4 +68,30 @@ infixl 2 `xor'`
 infixl 1 `or'`
 infixl 1 `nor'`
 infixl 0 `impl'`
+
+-- 48. (**) Truth tables for logical expressions (3).
+-- Generalize problem 47 in such a way that the logical expression may
+-- contain any number of logical variables. Define tablen in a way that
+-- (tablen list expr) prints the truth table for the expression (expr),
+-- which contains the logical variables enumerated in (list).
+genBoolArgs :: Int -> [[Bool]]
+genBoolArgs 0 = []
+genBoolArgs 1 = [[True],[False]]
+genBoolArgs n =
+    let prev  = genBoolArgs $ n - 1
+        tHalf = map (\bs -> True:bs) prev
+        fHalf = map (\bs -> False:bs) prev
+    in  tHalf ++ fHalf
+
+btos :: String -> Bool -> String
+btos ""  b = show b
+btos del b = show b ++ del
+
+tablenLine :: ([Bool] -> Bool) -> [Bool] -> String
+tablenLine f args = foldl (++) "" $ map (btos " ") args ++ [btos "" (f args)]
+
+tablen :: PrintfType r => Int -> ([Bool] -> Bool) -> r
+tablen n f =
+    let args = genBoolArgs n
+    in  printf $ unlines $ map (tablenLine f) args
 
