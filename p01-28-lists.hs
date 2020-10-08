@@ -40,9 +40,9 @@ myReverse xs     = last xs:myReverse (init xs)
 -- A palindrome can be read forward or backward; e.g. (x a m a x). 
 isPalindrome :: (Eq a) => [a] -> Bool
 isPalindrome xs
-    | length xs < 2      = True
-    | head xs /= last xs = False
-    | otherwise          = isPalindrome $ init $ tail xs
+  | length xs < 2      = True
+  | head xs /= last xs = False
+  | otherwise          = isPalindrome $ init $ tail xs
 
 -- 7.(**) Flatten a nested list structure.
 -- Transform a list, possibly holding lists as elements into
@@ -63,9 +63,10 @@ flatten (List (x:xs)) = flatten x ++ flatten (List xs)
 compress :: (Eq a) => [a] -> [a]
 compress []     = []
 compress [x]    = [x]
-compress (x:xs) = if x == head xs
-                    then compress $ x : tail xs
-                    else x : compress xs
+compress (x:xs) =
+  if x == head xs
+    then compress $ x:tail xs
+    else x:compress xs
 
 -- 9. (**) Pack consecutive duplicates of list elements into sublists.
 -- If a list contains repeated elements
@@ -77,9 +78,10 @@ pack xs = packHelp $ map (\i -> [i]) xs
 
 packHelp :: (Eq a) => [[a]] -> [[a]]
 packHelp [x]      = [x] 
-packHelp (x:y:xs) = if head x == head y
-                    then packHelp ((head y : x) : xs)
-                    else x:(packHelp $ y:xs)
+packHelp (x:y:xs) =
+  if head x == head y
+    then packHelp ((head y:x):xs)
+    else x:(packHelp $ y:xs)
 
 -- 10. (*) Run-length encoding of a list.
 -- Use the result of problem P09 to implement the so-called
@@ -98,9 +100,10 @@ data MultiSingle a = Single a
                    deriving (Show)
 
 msConv :: (Int, a) -> MultiSingle a
-msConv t = if fst t == 1
-           then Single $ snd t
-           else Multiple (fst t) (snd t)
+msConv t =
+  if fst t == 1
+    then Single $ snd t
+    else Multiple (fst t) (snd t)
 
 encodeModified :: (Eq a) => [a] -> [MultiSingle a]
 encodeModified xs = map msConv (encode xs)
@@ -110,7 +113,7 @@ encodeModified xs = map msConv (encode xs)
 -- construct its uncompressed version.
 decodeModified :: [MultiSingle a] -> [a]
 decodeModified []                  = []
-decodeModified ((Single x):xs)     = x : decodeModified xs
+decodeModified ((Single x):xs)     = x:decodeModified xs
 decodeModified ((Multiple c x):xs) = (take c $ repeat x) ++ decodeModified xs
 
 -- 13. (**) Run-length encoding of a list (direct solution).
@@ -126,18 +129,22 @@ encodeDirect xs = edHelp $ map (\x -> Single x) xs
 edHelp :: (Eq a) => [MultiSingle a] -> [MultiSingle a]
 edHelp []                         = []
 edHelp [x]                        = [x]
-edHelp [Single x, Single y]       = if x == y
-                                    then [Multiple 2 x]
-                                    else [Single x, Single y]
-edHelp [Multiple c x, Single y]   = if x == y
-                                    then [Multiple (c + 1) x]
-                                    else [Multiple c x, Single y]
-edHelp (Single x:Single y:xs)     = if x == y
-                                    then edHelp (Multiple 2 x:xs)
-                                    else Single x:edHelp (Single y:xs)
-edHelp (Multiple c x:Single y:xs) = if x == y
-                                    then edHelp (Multiple (c + 1) x:xs)
-                                    else Multiple c x:edHelp (Single y:xs)
+edHelp [Single x, Single y]       =
+  if x == y
+    then [Multiple 2 x]
+    else [Single x, Single y]
+edHelp [Multiple c x, Single y]   =
+  if x == y
+    then [Multiple (c + 1) x]
+    else [Multiple c x, Single y]
+edHelp (Single x:Single y:xs)     =
+  if x == y
+    then edHelp (Multiple 2 x:xs)
+    else Single x:edHelp (Single y:xs)
+edHelp (Multiple c x:Single y:xs) =
+  if x == y
+    then edHelp (Multiple (c + 1) x:xs)
+    else  Multiple c x:edHelp (Single y:xs)
 
 -- 14. (*) Duplicate the elements of a list.
 dupli :: [a] -> [a]
@@ -152,14 +159,14 @@ repli (x:xs) c = (take c $ repeat x) ++ repli xs c
 -- 16. (**) Drop every N'th element from a list. (first is 1, not 0)
 dropEvery :: [a] -> Int -> [a]
 dropEvery xs c = map fst [t | t <- z, snd t `mod` c /= 0]
-                where z = zip xs [1 .. ]
+  where z = zip xs [1 .. ]
 
 -- 17. (*) Split a list into two parts; the length of the first part is given.
 -- Do not use any predefined predicates. 
 split' :: [a] -> Int -> ([a], [a])
 split' xs 0     = ([], xs)
 split' (x:xs) c = (x:fst t, snd t)
-                where t = split' xs (c - 1)
+  where t = split' xs (c - 1)
 
 -- 18. (**) Extract a slice from a list.
 -- Given two indices, i and k, the slice is the list containing
@@ -176,15 +183,15 @@ rotate :: [a] -> Int -> [a]
 rotate [] _     = []
 rotate [x] _    = [x]
 rotate xs i
-    | i > 0     = rotate (tail xs ++ [head xs]) (i - 1)
-    | i < 0     = rotate (last xs:init xs) (i + 1)
-    | otherwise = xs
+  | i > 0     = rotate (tail xs ++ [head xs]) (i - 1)
+  | i < 0     = rotate (last xs:init xs) (i + 1)
+  | otherwise = xs
 
 -- 20. (*) Remove the K'th element from a list. (1-indexed)
 removeAt :: Int -> [a] -> (a, [a])
 removeAt 1 xs     = (head xs, tail xs)
 removeAt c (x:xs) = (fst t, x:snd t)
-                  where t = removeAt (c - 1) xs
+  where t = removeAt (c - 1) xs
 
 -- 21. Insert an element at a given position into a list. (1-indexed)
 insertAt :: a -> [a] -> Int -> [a]
@@ -196,13 +203,31 @@ insertAt x xs i = head xs:insertAt x (tail xs) (i - 1)
 -- 22. Create a list containing all integers within a given range. (inclusive)
 range :: Int -> Int -> [Int]
 range x y
-    | x > y     = []
-    | x == y    = [x]
-    | otherwise = x:range (x + 1) y
+  | x > y     = []
+  | x == y    = [x]
+  | otherwise = x:range (x + 1) y
 
 -- 23. Extract a given number of randomly selected elements from a list.
 rndSelect :: [a] -> Int -> IO [a]
 rndSelect xs n = do
-    gen <- newStdGen
-    return $ [xs !! (mod i $ length xs) | i <- (take n $ randoms gen)]
+  shuffled <- shuffle xs
+  return $ take n $ shuffled
+
+shuffle :: [a] -> IO [a]
+shuffle []  = return []
+shuffle [x] = return [x]
+shuffle xs  = do
+  ri <- randomIO :: IO Int
+  let i = ri `mod` length xs + 1
+      (e, rest) = removeAt i xs
+  rest' <- shuffle rest
+  return $ e:rest'
+
+-- 24. Lotto: Draw N different random numbers from the set 1..M.
+diffSelect :: Int -> Int -> IO [Int]
+diffSelect n m = rndSelect [1..m] n
+
+-- 25. Generate a random permutation of the elements of a list.
+rndPermu :: [a] -> IO [a]
+rndPermu = shuffle
 
